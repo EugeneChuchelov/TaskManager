@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -58,7 +57,7 @@ public class Journal implements Serializable {
         }
     }
 
-    public List<Task> search(Date date){
+    private List<Task> search(Date date){
         List<Task> found = new LinkedList<>();
         for(Task task : journal){
             if(task.getDate().equals(date)){

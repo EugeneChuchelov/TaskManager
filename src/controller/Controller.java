@@ -19,8 +19,8 @@ public class Controller {
         }
     }
 
-    public static void parse(String string) {
-        String command = "";
+    private static void parse(String string) {
+        String command;
         if(string.indexOf(' ') != -1){
             command = string.substring(0, string.indexOf(' '));
         } else {
