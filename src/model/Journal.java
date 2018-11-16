@@ -44,14 +44,18 @@ public class Journal implements Serializable {
     }
 
     private List<Task> search(String title){
-        Pattern pattern = Pattern.compile(title);
         List<Task> found = new LinkedList<>();
-        for(Task task : journal){
-            if(pattern.matcher(task.getTitle()).matches()){
-                found.add(task);
+        try {
+            Pattern pattern = Pattern.compile(title);
+            for(Task task : journal){
+                if(pattern.matcher(task.getTitle()).matches()){
+                    found.add(task);
+                }
             }
+            return found;
+        } catch (Exception e){
+            return found;
         }
-        return found;
     }
 
     public List<Task> search(Date date){

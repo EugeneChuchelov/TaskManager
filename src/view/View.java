@@ -54,14 +54,4 @@ public class View {
     public static String in(){
         return scanner.nextLine();
     }
-
-    public static void main(String[] args) {
-        while (true){
-            try{
-                Controller.parse(in());
-            } catch (StringIndexOutOfBoundsException e){
-                System.out.println("У команды должны быть аргументы");
-            }
-        }
-    }
 }
