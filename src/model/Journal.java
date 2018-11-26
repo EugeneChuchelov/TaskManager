@@ -1,6 +1,5 @@
 package model;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class Journal implements Serializable {
+public class Journal {
     private List<Task> journal;
 
     public Journal() {
@@ -20,14 +19,9 @@ public class Journal implements Serializable {
         return journal;
     }
 
-    public void add(String[] args){
+    public void add(String[] args) throws ParseException{
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        Date date = null;
-        try {
-            date = ft.parse(args[2]);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Date date = ft.parse(args[2]);
         journal.add(new Task(args[0], args[1], date, args[3]));
     }
 

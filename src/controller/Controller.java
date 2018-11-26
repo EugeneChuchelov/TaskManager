@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.Gson;
 import model.Journal;
 import model.Task;
 import view.View;
@@ -7,21 +8,24 @@ import view.View;
 import java.io.*;
 import java.util.List;
 
-public class Controller {
+public class Controller{
     private static Journal journal = new Journal();
     private static boolean stop = false;
-    private static String DEFAULT_SAVE_PATH = "tasks.bin";
-
-    public static void main(String[] args) {
+    private static String DEFAULT_SAVE_PATH = "journal.json";
+   public static void main(String[] args) {
         load(DEFAULT_SAVE_PATH);
-        while (!stop){
+        //Alert всё ещё не работает
+        Thread alertThread = new Alert(journal);
+        alertThread.start();
+        while (!stop) {
             parse(View.in());
         }
+        alertThread.interrupt();
     }
 
     private static void parse(String string) {
         String command;
-        if(string.indexOf(' ') != -1){
+        if (string.indexOf(' ') != -1) {
             command = string.substring(0, string.indexOf(' '));
         } else {
             command = string;
@@ -45,7 +49,7 @@ public class Controller {
             case "показать":
                 View.foundMessage(journal.getJournal());
                 break;
-            case "выйти" :
+            case "выйти":
                 exit();
                 break;
             default:
@@ -85,18 +89,23 @@ public class Controller {
             View.deletedMessage(found.get(0));
         } else {
             View.foundMessage(found);
-            View.multiplyChoices();
-            int index = Integer.parseInt(View.in());
-            journal.delete(found.get(index));
-            View.deletedMessage(found.get(index));
+            int index = View.multiplyChoices(found.size());
+            if (index < 0 || index > found.size()) {
+                View.errorMessage();
+            } else {
+                journal.delete(found.get(index));
+                View.deletedMessage(found.get(index));
+            }
         }
     }
 
+    //Используется для сохранения и загрузки библиотека gson
     private static void save(String path) {
+        Gson gson = new Gson();
         try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(path));
-            outputStream.writeObject(journal);
-            outputStream.close();
+            FileWriter writer = new FileWriter(path);
+            writer.write(gson.toJson(journal));
+            writer.close();
             View.savedMessage(path);
         } catch (IOException e) {
             View.errorMessage();
@@ -104,18 +113,33 @@ public class Controller {
     }
 
     private static void load(String path) {
+        Gson gson = new Gson();
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(path));
-            journal = (Journal) inputStream.readObject();
-            inputStream.close();
+            FileReader reader = new FileReader(path);
+            journal = gson.fromJson(reader, Journal.class);
+            reader.close();
             View.loadedMessage(path);
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             View.errorMessage();
         }
     }
 
-    private static void exit(){
+    private static void exit() {
         save(DEFAULT_SAVE_PATH);
         stop = true;
+    }
+
+    static void alertNow(Task task) {
+        boolean finish = View.alertNow(task);
+        if (finish) {
+            journal.delete(task);
+        } else {
+            task.delay();
+            View.delayed();
+        }
+    }
+
+    static void alertSoon(Task task) {
+        View.alertSoon(task);
     }
 }

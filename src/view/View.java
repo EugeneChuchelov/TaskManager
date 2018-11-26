@@ -1,6 +1,5 @@
 package view;
 
-import controller.Controller;
 import model.Task;
 
 import java.util.List;
@@ -35,8 +34,9 @@ public class View {
         System.out.println(task.toString());
     }
 
-    public static void multiplyChoices(){
-        System.out.println("Какую запись удалить?");
+    public static int multiplyChoices(int count){
+        System.out.println("Какую запись удалить? (0-" + count + ")");
+        return Integer.parseInt(in());
     }
 
     public static void savedMessage(String path){
@@ -49,6 +49,22 @@ public class View {
 
     public static void unknownMessage(){
         System.out.println("Неизвестная команда");
+    }
+
+    public static boolean alertNow(Task task){
+        System.out.println("Внимание! Пришло время задачи:");
+        System.out.println(task.toString());
+        System.out.println("Завершить или отложить?");
+        return in().toLowerCase().equals("завершить");
+    }
+
+    public static void alertSoon(Task task){
+        System.out.println("Внимание! Через полчаса придёт время задачи:");
+        System.out.println(task.toString());
+    }
+
+    public static void delayed(){
+        System.out.println("Задача была отложена на 5 минут");
     }
 
     public static String in(){
