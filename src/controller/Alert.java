@@ -15,14 +15,16 @@ public class Alert extends Thread {
 
     @Override
     public void run() {
-        while (true){
+        while (true) {
             Date now = new Date();
             Date soon = new Date(now.getTime() + HALF_HOUR);
-            for(Task task : journal.getJournal()){
-                if(task.getDate().before(now)){
-                    Controller.alertNow(task);
-                } else if(task.getDate().before(soon)){
-                    Controller.alertSoon(task);
+            for (Task task : journal.getJournal()) {
+                if (task.getDate().before(now)) {
+                    task.setFlag(taskFlag.now);
+                    //Controller.alertNow(task);
+                } else if (task.getDate().before(soon)) {
+                    task.setFlag(taskFlag.soon);
+                    //Controller.alertSoon(task);
                 }
             }
             try {

@@ -1,1 +1,22 @@
-{"journal":[{"title":"встреча","description":"важная встреча","date":"Nov 22, 2018 3:00:00 PM","contacts":"в парке"},{"title":"встреча","description":"стоит придти","date":"Jan 2, 2019 4:45:00 PM","contacts":"где-то"},{"title":"стоматолог","description":"необходимо","date":"Feb 16, 2019 12:10:00 AM","contacts":"больница"}]}
+{
+  "journal": [
+    {
+      "title": "встреча",
+      "description": "важная встреча",
+      "date": "2019-11-22 15:00",
+      "contacts": "в парке"
+    },
+    {
+      "title": "встреча",
+      "description": "стоит придти",
+      "date": "2019-01-02 16:45",
+      "contacts": "где-то"
+    },
+    {
+      "title": "стоматолог",
+      "description": "необходимо",
+      "date": "2019-02-16 12:10",
+      "contacts": "больница"
+    }
+  ]
+}

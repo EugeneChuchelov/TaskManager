@@ -1,15 +1,17 @@
 package model;
 
-import java.util.Date;
+import controller.taskFlag;
 
-public class Task {
+import java.util.Date;
+import java.util.Observable;
+
+public class Task extends Observable {
     private static final long DELAY_TIME = 300000;
     private String title;
     private String description;
     private Date date;
     private String contacts;
-    //0 - initial, 1 - in 30 minutes, 2 - in time
-    private int alertFlag = 0;
+    private taskFlag flag = taskFlag.initial;
 
     public Task(String title, String description, Date date, String contacts) {
         this.title = title;
@@ -26,7 +28,15 @@ public class Task {
         return date;
     }
 
-    public void delay(){
+    public taskFlag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(taskFlag flag) {
+        this.flag = flag;
+    }
+
+    public void delay() {
         date.setTime(date.getTime() + DELAY_TIME);
     }
 
@@ -35,7 +45,7 @@ public class Task {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Название: ").append(title).append("\n");
         stringBuilder.append("Описание: ").append(description).append("\n");
-        if(date != null){
+        if (date != null) {
             stringBuilder.append("Дата и время: ").append(date.toString()).append("\n");
         } else {
             stringBuilder.append("Дата и время не указаны").append("\n");

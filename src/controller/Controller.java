@@ -1,18 +1,26 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.Journal;
 import model.Task;
 import view.View;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Controller{
+public class Controller implements Observer {
     private static Journal journal = new Journal();
     private static boolean stop = false;
     private static String DEFAULT_SAVE_PATH = "journal.json";
-   public static void main(String[] args) {
+
+    public static void main(String[] args) {
         load(DEFAULT_SAVE_PATH);
         //Alert всё ещё не работает
         Thread alertThread = new Alert(journal);
@@ -74,7 +82,13 @@ public class Controller{
 
     private static void find(String string) {
         List<Task> found;
-        found = journal.find(string);
+        try {
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            Date date = ft.parse(string.trim());
+            found = journal.find(date);
+        } catch (Exception e) {
+            found = journal.find(string.trim());
+        }
         if (found.size() == 0) {
             View.notFoundMessage();
             return;
@@ -101,7 +115,10 @@ public class Controller{
 
     //Используется для сохранения и загрузки библиотека gson
     private static void save(String path) {
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.setDateFormat("yyyy-MM-dd hh:mm");
+        Gson gson = builder.create();
         try {
             FileWriter writer = new FileWriter(path);
             writer.write(gson.toJson(journal));
@@ -113,7 +130,9 @@ public class Controller{
     }
 
     private static void load(String path) {
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.setDateFormat("yyyy-MM-dd hh:mm");
+        Gson gson = builder.create();
         try {
             FileReader reader = new FileReader(path);
             journal = gson.fromJson(reader, Journal.class);
@@ -141,5 +160,10 @@ public class Controller{
 
     static void alertSoon(Task task) {
         View.alertSoon(task);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }

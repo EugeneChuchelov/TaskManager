@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 public class Journal {
     private List<Task> journal;
 
+
     public Journal() {
         this.journal = new LinkedList<>();
     }
@@ -19,49 +20,40 @@ public class Journal {
         return journal;
     }
 
-    public void add(String[] args) throws ParseException{
+    public Task add(String[] args) throws ParseException {
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         Date date = ft.parse(args[2]);
-        journal.add(new Task(args[0], args[1], date, args[3]));
+        Task task = new Task(args[0], args[1], date, args[3]);
+        journal.add(task);
+        return task;
     }
 
-    public List<Task> find(String string){
-        try{
-            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            Date date = ft.parse(string.trim());
-            return search(date);
-        } catch (Exception e){
-            return search(string.trim());
-        }
-
-    }
-
-    private List<Task> search(String title){
+    public List<Task> find(String title) {
         List<Task> found = new LinkedList<>();
         try {
             Pattern pattern = Pattern.compile(title);
-            for(Task task : journal){
-                if(pattern.matcher(task.getTitle()).matches()){
+            for (Task task : journal) {
+                if (pattern.matcher(task.getTitle()).matches()) {
                     found.add(task);
                 }
             }
             return found;
-        } catch (Exception e){
+        } catch (Exception e) {
             return found;
         }
     }
 
-    private List<Task> search(Date date){
+    public List<Task> find(Date date) {
         List<Task> found = new LinkedList<>();
-        for(Task task : journal){
-            if(task.getDate().equals(date)){
+        for (Task task : journal) {
+            if (task.getDate().equals(date)) {
                 found.add(task);
             }
         }
         return found;
     }
 
-    public void delete(Task desired){
+    public void delete(Task desired) {
         journal.remove(desired);
     }
 }
