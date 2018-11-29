@@ -12,26 +12,29 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
-public class Controller implements Observer {
-    private static Journal journal = new Journal();
-    private static boolean stop = false;
+public class Controller {
     private static String DEFAULT_SAVE_PATH = "journal.json";
+    private Journal journal = new Journal();
+    private Alert alert;
+    private boolean stop = false;
 
     public static void main(String[] args) {
-        load(DEFAULT_SAVE_PATH);
-        //Alert всё ещё не работает
-        Thread alertThread = new Alert(journal);
-        alertThread.start();
-        while (!stop) {
-            parse(View.in());
+        Controller controller = new Controller();
+        controller.load(DEFAULT_SAVE_PATH);
+        controller.alert = new Alert(controller);
+        controller.alert.start();
+        while (!controller.stop) {
+            controller.parse(View.in(false));
         }
-        alertThread.interrupt();
+        controller.alert.interrupt();
     }
 
-    private static void parse(String string) {
+    public Journal getJournal() {
+        return journal;
+    }
+
+    private void parse(String string) {
         String command;
         if (string.indexOf(' ') != -1) {
             command = string.substring(0, string.indexOf(' '));
@@ -60,13 +63,21 @@ public class Controller implements Observer {
             case "выйти":
                 exit();
                 break;
+            case "завершить":
+                alert.end();
+                View.closed();
+                break;
+            case "отложить":
+                alert.delay();
+                View.delayed();
+                break;
             default:
                 View.unknownMessage();
                 break;
         }
     }
 
-    private static void add(String string) {
+    private void add(String string) {
         String[] args = string.split(",");
         for (int i = 0; i < args.length; i++) {
             args[i] = args[i].trim();
@@ -80,7 +91,7 @@ public class Controller implements Observer {
         View.addedMessage();
     }
 
-    private static void find(String string) {
+    private void find(String string) {
         List<Task> found;
         try {
             SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -96,7 +107,7 @@ public class Controller implements Observer {
         View.foundMessage(found);
     }
 
-    private static void delete(String string) {
+    private void delete(String string) {
         List<Task> found = journal.find(string);
         if (found.size() == 1) {
             journal.delete(found.get(0));
@@ -114,10 +125,10 @@ public class Controller implements Observer {
     }
 
     //Используется для сохранения и загрузки библиотека gson
-    private static void save(String path) {
+    private void save(String path) {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
-        builder.setDateFormat("yyyy-MM-dd hh:mm");
+        builder.setDateFormat("yyyy-MM-dd HH:mm");
         Gson gson = builder.create();
         try {
             FileWriter writer = new FileWriter(path);
@@ -129,9 +140,9 @@ public class Controller implements Observer {
         }
     }
 
-    private static void load(String path) {
+    private void load(String path) {
         GsonBuilder builder = new GsonBuilder();
-        builder.setDateFormat("yyyy-MM-dd hh:mm");
+        builder.setDateFormat("yyyy-MM-dd HH:mm");
         Gson gson = builder.create();
         try {
             FileReader reader = new FileReader(path);
@@ -143,27 +154,16 @@ public class Controller implements Observer {
         }
     }
 
-    private static void exit() {
+    private void exit() {
         save(DEFAULT_SAVE_PATH);
         stop = true;
     }
 
-    static void alertNow(Task task) {
-        boolean finish = View.alertNow(task);
-        if (finish) {
-            journal.delete(task);
-        } else {
-            task.delay();
-            View.delayed();
-        }
+    void alertNow(Task task) {
+        View.alertNow(task);
     }
 
-    static void alertSoon(Task task) {
+    void alertSoon(Task task) {
         View.alertSoon(task);
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-
     }
 }

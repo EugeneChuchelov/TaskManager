@@ -1,17 +1,15 @@
 package model;
 
-import controller.taskFlag;
-
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Observable;
 
-public class Task extends Observable {
+public class Task {
     private static final long DELAY_TIME = 300000;
     private String title;
     private String description;
     private Date date;
     private String contacts;
-    private taskFlag flag = taskFlag.initial;
 
     public Task(String title, String description, Date date, String contacts) {
         this.title = title;
@@ -28,29 +26,36 @@ public class Task extends Observable {
         return date;
     }
 
-    public taskFlag getFlag() {
-        return flag;
-    }
-
-    public void setFlag(taskFlag flag) {
-        this.flag = flag;
-    }
-
     public void delay() {
         date.setTime(date.getTime() + DELAY_TIME);
     }
 
     @Override
     public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E d MMMM yyyy, HH:mm", formatSymbols);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Название: ").append(title).append("\n");
         stringBuilder.append("Описание: ").append(description).append("\n");
         if (date != null) {
-            stringBuilder.append("Дата и время: ").append(date.toString()).append("\n");
+            stringBuilder.append("Дата и время: ").append(dateFormat.format(date)).append("\n");
         } else {
             stringBuilder.append("Дата и время не указаны").append("\n");
         }
         stringBuilder.append("Контакты: ").append(contacts);
         return stringBuilder.toString();
     }
+
+    private static DateFormatSymbols formatSymbols = new DateFormatSymbols() {
+        @Override
+        public String[] getShortWeekdays() {
+            return new String[]{"", "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."};
+        }
+
+        @Override
+        public String[] getMonths() {
+            return new String[]{"января", "февраля", "марта", "апреля", "мая", "июня",
+                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+        }
+
+    };
 }

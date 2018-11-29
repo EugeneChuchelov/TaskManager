@@ -20,12 +20,11 @@ public class Journal {
         return journal;
     }
 
-    public Task add(String[] args) throws ParseException {
-        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    public void add(String[] args) throws ParseException {
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = ft.parse(args[2]);
         Task task = new Task(args[0], args[1], date, args[3]);
         journal.add(task);
-        return task;
     }
 
     public List<Task> find(String title) {
@@ -55,5 +54,9 @@ public class Journal {
 
     public void delete(Task desired) {
         journal.remove(desired);
+    }
+
+    public void delay(Task desired) {
+        journal.get(journal.indexOf(desired)).delay();
     }
 }
