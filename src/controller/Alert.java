@@ -9,7 +9,7 @@ public class Alert extends Thread {
     private Controller controller;
     private Task currentTask;
 
-    public Alert(Controller controller) {
+    Alert(Controller controller) {
         this.controller = controller;
     }
 
@@ -36,13 +36,21 @@ public class Alert extends Thread {
         }
     }
 
-    public void end() {
+    Boolean close() {
+        if (currentTask == null) {
+            return false;
+        }
         controller.getJournal().delete(currentTask);
         currentTask = null;
+        return true;
     }
 
-    public void delay() {
+    Boolean delay() {
+        if (currentTask == null) {
+            return false;
+        }
         controller.getJournal().delay(currentTask);
         currentTask = null;
+        return true;
     }
 }

@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 public class Journal {
     private List<Task> journal;
 
-
     public Journal() {
         this.journal = new LinkedList<>();
     }

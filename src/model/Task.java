@@ -11,14 +11,14 @@ public class Task {
     private Date date;
     private String contacts;
 
-    public Task(String title, String description, Date date, String contacts) {
+    Task(String title, String description, Date date, String contacts) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.contacts = contacts;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
@@ -26,7 +26,7 @@ public class Task {
         return date;
     }
 
-    public void delay() {
+    void delay() {
         date.setTime(date.getTime() + DELAY_TIME);
     }
 

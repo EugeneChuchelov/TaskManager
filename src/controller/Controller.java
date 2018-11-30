@@ -25,12 +25,12 @@ public class Controller {
         controller.alert = new Alert(controller);
         controller.alert.start();
         while (!controller.stop) {
-            controller.parse(View.in(false));
+            controller.parse(View.in());
         }
         controller.alert.interrupt();
     }
 
-    public Journal getJournal() {
+    Journal getJournal() {
         return journal;
     }
 
@@ -64,12 +64,18 @@ public class Controller {
                 exit();
                 break;
             case "завершить":
-                alert.end();
-                View.closed();
+                if (alert.close()) {
+                    View.closed();
+                } else {
+                    View.nothingToClose();
+                }
                 break;
             case "отложить":
-                alert.delay();
-                View.delayed();
+                if (alert.delay()) {
+                    View.delayed();
+                } else {
+                    View.nothingToClose();
+                }
                 break;
             default:
                 View.unknownMessage();
@@ -114,8 +120,8 @@ public class Controller {
             View.deletedMessage(found.get(0));
         } else {
             View.foundMessage(found);
-            int index = View.multiplyChoices(found.size());
-            if (index < 0 || index > found.size()) {
+            int index = View.multiplyChoices(found.size() - 1);
+            if (index < 0 || index > found.size() - 1) {
                 View.errorMessage();
             } else {
                 journal.delete(found.get(index));
@@ -126,6 +132,9 @@ public class Controller {
 
     //Используется для сохранения и загрузки библиотека gson
     private void save(String path) {
+        if (path.equals("сохранить")) {
+            path = DEFAULT_SAVE_PATH;
+        }
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         builder.setDateFormat("yyyy-MM-dd HH:mm");
@@ -141,6 +150,9 @@ public class Controller {
     }
 
     private void load(String path) {
+        if (path.equals("сохранить")) {
+            path = DEFAULT_SAVE_PATH;
+        }
         GsonBuilder builder = new GsonBuilder();
         builder.setDateFormat("yyyy-MM-dd HH:mm");
         Gson gson = builder.create();
