@@ -6,24 +6,45 @@ import java.util.Date;
 
 public class Task {
     private static final long DELAY_TIME = 300000;
+    private static DateFormatSymbols formatSymbols = new DateFormatSymbols() {
+        @Override
+        public String[] getShortWeekdays() {
+            return new String[]{"", "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."};
+        }
+
+        @Override
+        public String[] getMonths() {
+            return new String[]{"января", "февраля", "марта", "апреля", "мая", "июня",
+                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+        }
+
+    };
     private String title;
     private String description;
     private Date date;
     private String contacts;
 
-    Task(String title, String description, Date date, String contacts) {
+    public Task(String title, String description, Date date, String contacts) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.contacts = contacts;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
     public Date getDate() {
         return date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getContacts() {
+        return contacts;
     }
 
     void delay() {
@@ -44,18 +65,4 @@ public class Task {
         stringBuilder.append("Контакты: ").append(contacts);
         return stringBuilder.toString();
     }
-
-    private static DateFormatSymbols formatSymbols = new DateFormatSymbols() {
-        @Override
-        public String[] getShortWeekdays() {
-            return new String[]{"", "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб.", "Вс."};
-        }
-
-        @Override
-        public String[] getMonths() {
-            return new String[]{"января", "февраля", "марта", "апреля", "мая", "июня",
-                    "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-        }
-
-    };
 }

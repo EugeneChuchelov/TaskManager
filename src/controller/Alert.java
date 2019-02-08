@@ -1,15 +1,18 @@
 package controller;
 
+import javafx.application.Platform;
+import model.Journal;
 import model.Task;
 
 import java.util.Date;
 
 public class Alert extends Thread {
     private static final long HALF_HOUR = 1800000;
-    private Controller controller;
-    private Task currentTask;
+    private Journal journal;
+    private MainWindowController controller;
 
-    Alert(Controller controller) {
+    Alert(Journal journal, MainWindowController controller) {
+        this.journal = journal;
         this.controller = controller;
     }
 
@@ -19,13 +22,12 @@ public class Alert extends Thread {
             Date now = new Date();
             Date soonMin = new Date(now.getTime() + HALF_HOUR);
             Date soonMax = new Date(now.getTime() + HALF_HOUR - 30000);
-            for (Task task : controller.getJournal().getJournal()) {
+            for (Task task : journal.getJournal()) {
                 if (task.getDate().before(now)) {
-                    currentTask = task;
-                    controller.alertNow(task);
+                    Platform.runLater(() -> controller.alert(task));
                 } else if (task.getDate().before(soonMin) &&
                         task.getDate().after(soonMax)) {
-                    controller.alertSoon(task);
+                    Platform.runLater(() -> controller.alertSoon(task));
                 }
             }
             try {
@@ -34,23 +36,5 @@ public class Alert extends Thread {
                 break;
             }
         }
-    }
-
-    Boolean close() {
-        if (currentTask == null) {
-            return false;
-        }
-        controller.getJournal().delete(currentTask);
-        currentTask = null;
-        return true;
-    }
-
-    Boolean delay() {
-        if (currentTask == null) {
-            return false;
-        }
-        controller.getJournal().delay(currentTask);
-        currentTask = null;
-        return true;
     }
 }

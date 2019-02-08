@@ -1,33 +1,31 @@
 package model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 
 public class Journal {
-    private List<Task> journal;
+    private static String SAVE_PATH = "journal.json";
+    private ObservableList<Task> journal;
 
-    public Journal() {
-        this.journal = new LinkedList<>();
-    }
-
-    public List<Task> getJournal() {
+    public ObservableList<Task> getJournal() {
         return journal;
     }
 
-    public void add(String[] args) throws ParseException {
-        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = ft.parse(args[2]);
-        Task task = new Task(args[0], args[1], date, args[3]);
+    public void add(Task task) {
         journal.add(task);
     }
 
-    public List<Task> find(String title) {
-        List<Task> found = new LinkedList<>();
+    public ObservableList<Task> find(String title) {
+        ObservableList<Task> found = FXCollections.observableArrayList();
         try {
             Pattern pattern = Pattern.compile(title);
             for (Task task : journal) {
@@ -41,8 +39,8 @@ public class Journal {
         }
     }
 
-    public List<Task> find(Date date) {
-        List<Task> found = new LinkedList<>();
+    public ObservableList<Task> find(Date date) {
+        ObservableList<Task> found = FXCollections.observableArrayList();
         for (Task task : journal) {
             if (task.getDate().equals(date)) {
                 found.add(task);
@@ -51,11 +49,41 @@ public class Journal {
         return found;
     }
 
-    public void delete(Task desired) {
+    public void remove(Task desired) {
         journal.remove(desired);
     }
 
     public void delay(Task desired) {
         journal.get(journal.indexOf(desired)).delay();
+    }
+
+    //
+
+    public void save() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.setDateFormat("yyyy-MM-dd HH:mm");
+        Gson gson = builder.create();
+        try {
+            FileWriter writer = new FileWriter(SAVE_PATH);
+            writer.write(gson.toJson(journal));
+            writer.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void load() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setDateFormat("yyyy-MM-dd HH:mm");
+        builder.registerTypeAdapter(ObservableList.class, new ObservableListDeserializer());
+        Gson gson = builder.create();
+        try {
+            FileReader reader = new FileReader(SAVE_PATH);
+            journal = gson.fromJson(reader, ObservableList.class);
+            reader.close();
+        } catch (IOException e) {
+
+        }
     }
 }

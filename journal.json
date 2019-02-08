@@ -1,22 +1,32 @@
-{
-  "journal": [
-    {
-      "title": "встреча",
-      "description": "важная встреча",
-      "date": "2019-11-22 15:00",
-      "contacts": "в парке"
-    },
-    {
-      "title": "встреча",
-      "description": "стоит придти",
-      "date": "2019-01-02 16:45",
-      "contacts": "где-то"
-    },
-    {
-      "title": "стоматолог",
-      "description": "необходимо",
-      "date": "2019-02-16 12:10",
-      "contacts": "больница"
-    }
-  ]
-}
+[
+  {
+    "title": "123",
+    "description": "123",
+    "date": "2029-02-07 19:42",
+    "contacts": "244"
+  },
+  {
+    "title": "qwerty",
+    "description": "123",
+    "date": "2029-02-07 19:42",
+    "contacts": "244"
+  },
+  {
+    "title": "wert",
+    "description": "123",
+    "date": "2029-02-07 19:42",
+    "contacts": "244"
+  },
+  {
+    "title": "hgf",
+    "description": "gyjt",
+    "date": "2019-02-07 17:50",
+    "contacts": "23523"
+  },
+  {
+    "title": "tyu6ju",
+    "description": "5yrft",
+    "date": "2019-02-20 00:59",
+    "contacts": "43tg"
+  }
+]
